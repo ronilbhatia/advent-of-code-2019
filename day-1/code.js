@@ -19,4 +19,30 @@ function massCalculator(file) {
   })
 }
 
-massCalculator('input.txt')
+// massCalculator('input.txt');
+
+/* PART 2 */
+
+function recursiveMassCalculator(file) {
+  getFile(file).then(input => {
+    const parsed = parseInput(input);
+    const res = parsed.reduce((total, curr) => {
+      return total + calcFuelRec(curr);
+    }, 0)
+    console.log(res);
+    return res;
+  })
+}
+
+function calcFuelRec(mass) {
+  let totalFuel = 0;
+
+  while (mass > 0) {
+    mass = (Math.floor(mass / 3) - 2);
+    if (mass > 0) totalFuel += mass;
+  }
+
+  return totalFuel;
+}
+
+recursiveMassCalculator('input.txt');
