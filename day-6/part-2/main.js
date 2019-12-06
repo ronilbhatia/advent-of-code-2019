@@ -5,10 +5,9 @@ function calcOrbits(inputFile) {
   fs.readFile(inputFile, (err, input) => {
     const orbitStrings = input.toString().split('\n');
     orbitStrings.forEach(orbitString => Node.buildNodesFromString(orbitString))
-    const you = Node.nodes.find(node => node.name === 'YOU')
-    const san = Node.nodes.find(node => node.name === 'SAN')
+    const [you, san] = [Node.nodes['YOU'], Node.nodes['SAN']];
     console.log(Node.orbitalTransfersBetweenNodes(you, san));
   })
 }
 
-calcOrbits('testInput.txt');
+calcOrbits('input.txt');

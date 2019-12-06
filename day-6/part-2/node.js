@@ -1,21 +1,18 @@
 class Node {
   constructor(name, parent = null) {
     this.name = name;
-    this.numChildren = 0;
     this.children = [];
     this.parent = parent;
 
-    Node.nodes.push(this);
+    Node.nodes[this.name] = this;
   }
 
   addChild(child) {
     this.children.push(child);
-    this.numChildren += 1;
   }
 
   recursiveNumChildren() {
-    let numChildren = this.numChildren;
-    debugger
+    let numChildren = this.children.length;
     this.children.forEach(child => numChildren += child.recursiveNumChildren());
     return numChildren;
   }
@@ -35,7 +32,7 @@ class Node {
 
   static buildNodesFromString(str) {
     const [parent, child] = str.split(')').map(name => {
-      let node = Node.nodes.find(node => node.name === name);
+      let node = Node.nodes[name];
       if (!node) node = new Node(name);
       return node;
     });
@@ -67,6 +64,6 @@ class Node {
   }
 }
 
-Node.nodes = [];
+Node.nodes = {};
 
 module.exports = Node;
