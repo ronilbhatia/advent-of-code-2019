@@ -1,72 +1,8 @@
 const fs = require('fs');
+const IntcodeComputer = require('./intcode_computer');
 
 fs.readFile('input.txt', (err, data) => {
-  const input = data.toString();
-  intcodeComputer(input);
+  const input = data.toString().split(',').map(el => parseInt(el));
+  const machine = new IntcodeComputer(input, 2);
+  machine.run();
 });
-
-function intcodeComputer(input) {
-  const inputArr = input.split(',').map(el => parseInt(el));
-  let i = 0;
-  let relativeBase = 0;
-
-  while (i < inputArr.length) {
-    const digits = inputArr[i].toString();
-    let [opCode, paramModes] = processDigits(digits);
-    let [num1, num2, writeAddress] = getParams(inputArr, i, relativeBase, paramModes, opCode);
-
-    if (opCode === 1) {
-      inputArr[writeAddress] = (num1 + num2)
-      i += 4;
-    } else if (opCode === 2) {
-      inputArr[writeAddress] = (num1 * num2)
-      i += 4;
-    } else if (opCode === 3) {
-      inputArr[writeAddress] = 1
-      i += 2
-    } else if (opCode === 4) {
-      console.log(num1);
-      i += 2;
-    } else if (opCode === 5) {
-      i = (num1 !== 0) ? num2 : i + 3;
-    } else if (opCode === 6) {
-      i = (num1 === 0) ? num2 : i + 3;
-    } else if (opCode === 7) {
-      inputArr[writeAddress] = (num1 < num2) ? 1 : 0;
-      i += 4;
-    } else if (opCode === 8) {
-      inputArr[writeAddress] = (num1 === num2) ? 1 : 0;
-      i += 4;
-    } else if (opCode === 9) {
-      relativeBase += num1;
-      i += 2;
-    } else if (opCode === 99) {
-      break;
-    }
-  }
-}
-
-function processDigits(digits) {
-  const opCode = parseInt(digits.slice(digits.length - 2))
-  const paramModes = {
-    param1: parseInt(digits[digits.length - 3]),
-    param2: parseInt(digits[digits.length - 4]),
-    param3: parseInt(digits[digits.length - 5])
-  }
-
-  return [opCode, paramModes];
-}
-
-function getParams(inputArr, i, relativeBase, paramModes, opCode) {
-  const { param1, param2, param3 } = paramModes;
-  let num1 = inputArr[inputArr[i + 1]]
-  let num2 = inputArr[inputArr[i + 2]]
-  let writeAddress = inputArr[i + 3];
-  if (param1 === 1) num1 = inputArr[i + 1];
-  if (param2 === 1) num2 = inputArr[i + 2];
-  if (param1 === 2) num1 = inputArr[inputArr[i + 1] + relativeBase];
-  if (param2 === 2) num2 = inputArr[inputArr[i + 2] + relativeBase];
-  if (param3 === 2) writeAddress = inputArr[i + 3] + relativeBase;
-  if (param1 === 2 && opCode === 3) writeAddress = inputArr[i + 1] + relativeBase;
-  return [num1, num2, writeAddress];
-}
