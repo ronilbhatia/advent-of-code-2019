@@ -12,16 +12,8 @@ function intcodeComputer(input) {
 
   while (i < inputArr.length) {
     const digits = inputArr[i].toString();
-    let [opCode, param1, param2, param3] = processDigits(digits, inputArr, i);
-
-    let num1 = inputArr[inputArr[i + 1]]
-    let num2 = inputArr[inputArr[i + 2]]
-    let writeAddress = inputArr[i + 3];
-    if (param1 === 1) num1 = inputArr[i + 1];
-    if (param2 === 1) num2 = inputArr[i + 2];
-    if (param1 === 2) num1 = inputArr[inputArr[i + 1] + relativeBase];
-    if (param2 === 2) num2 = inputArr[inputArr[i + 2] + relativeBase];
-    if (param3 === 2) writeAddress = inputArr[i + 3] + relativeBase;
+    let [opCode, paramModes] = processDigits(digits);
+    let [num1, num2, writeAddress] = getParams(inputArr, i, relativeBase, paramModes, opCode);
 
     if (opCode === 1) {
       inputArr[writeAddress] = (num1 + num2)
@@ -30,8 +22,7 @@ function intcodeComputer(input) {
       inputArr[writeAddress] = (num1 * num2)
       i += 4;
     } else if (opCode === 3) {
-      if (param1 === 2) writeAddress = inputArr[i + 1] + relativeBase;
-      inputArr[writeAddress] = 2
+      inputArr[writeAddress] = 1
       i += 2
     } else if (opCode === 4) {
       console.log(num1);
@@ -51,25 +42,31 @@ function intcodeComputer(input) {
       i += 2;
     } else if (opCode === 99) {
       break;
-    } else {
-      break;
     }
   }
 }
 
-function processDigits(digits, inputArr, i) {
-  let opCode = inputArr[i];
-  let param1, param2, param3
-
-  if (inputArr[i] > 10) {
-    opCode = parseInt(digits[digits.length - 1]);
-    param1 = parseInt(digits[digits.length - 3]);
-    param2 = parseInt(digits[digits.length - 4]);
+function processDigits(digits) {
+  const opCode = parseInt(digits.slice(digits.length - 2))
+  const paramModes = {
+    param1: parseInt(digits[digits.length - 3]),
+    param2: parseInt(digits[digits.length - 4]),
+    param3: parseInt(digits[digits.length - 5])
   }
 
-  if (inputArr[i] >= 10000) {
-    param3 = parseInt(digits[digits.length - 5]);
-  }
+  return [opCode, paramModes];
+}
 
-  return [opCode, param1, param2, param3];
+function getParams(inputArr, i, relativeBase, paramModes, opCode) {
+  const { param1, param2, param3 } = paramModes;
+  let num1 = inputArr[inputArr[i + 1]]
+  let num2 = inputArr[inputArr[i + 2]]
+  let writeAddress = inputArr[i + 3];
+  if (param1 === 1) num1 = inputArr[i + 1];
+  if (param2 === 1) num2 = inputArr[i + 2];
+  if (param1 === 2) num1 = inputArr[inputArr[i + 1] + relativeBase];
+  if (param2 === 2) num2 = inputArr[inputArr[i + 2] + relativeBase];
+  if (param3 === 2) writeAddress = inputArr[i + 3] + relativeBase;
+  if (param1 === 2 && opCode === 3) writeAddress = inputArr[i + 1] + relativeBase;
+  return [num1, num2, writeAddress];
 }
