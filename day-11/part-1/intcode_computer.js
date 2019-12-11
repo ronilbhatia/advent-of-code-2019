@@ -1,0 +1,92 @@
+const PaintingRobot = require('./painting_robot');
+
+class IntcodeComputer {
+  constructor(program, initialInput) {
+    this.program = program;
+    this.initialInput = initialInput;
+    this.pointer = 0;
+    this.relativeBase = 0;
+    this.paintbot = new PaintingRobot();
+  }
+
+  run() {
+    const { program } = this
+
+    while (this.pointer < program.length) {
+      const digits = program[this.pointer].toString();
+      let [opCode, paramModes] = IntcodeComputer.processDigits(digits);
+      let [param1, param2, writeAddress] = this.getParams(paramModes, opCode);
+      console.log('Pointer ', this.pointer);
+      console.log('Op Code: ', opCode);
+      if (opCode === 1) {
+        program[writeAddress] = (param1 + param2)
+        this.pointer += 4;
+      } else if (opCode === 2) {
+        program[writeAddress] = (param1 * param2)
+        this.pointer += 4;
+      } else if (opCode === 3) {
+        console.log('Receiving Input ', this.paintbot.currPanel);
+        program[writeAddress] = this.paintbot.currPanel;
+        this.pointer += 2
+      } else if (opCode === 4) {
+        console.log('Param: ', param1);
+        this.paintbot.receiveInstruction(param1);
+        this.pointer += 2;
+      } else if (opCode === 5) {
+        this.pointer = (param1 !== 0) ? param2 : this.pointer + 3;
+      } else if (opCode === 6) {
+        this.pointer = (param1 === 0) ? param2 : this.pointer + 3;
+      } else if (opCode === 7) {
+        program[writeAddress] = (param1 < param2) ? 1 : 0;
+        this.pointer += 4;
+      } else if (opCode === 8) {
+        program[writeAddress] = (param1 === param2) ? 1 : 0;
+        this.pointer += 4;
+      } else if (opCode === 9) {
+        this.relativeBase += param1;
+        this.pointer += 2;
+      } else if (opCode === 99) {
+        break;
+      }
+    }
+    console.log(this.paintbot.totalPaints);
+    console.log(Object.keys(this.paintbot.coloredPositions).length);
+  }
+
+  getParams(paramModes, opCode) {
+    const { mode1, mode2, mode3 } = paramModes;
+    const { program, pointer, relativeBase } = this;
+
+    let param1 = program[program[pointer + 1]]
+    let param2 = program[program[pointer + 2]]
+    let writeAddress = program[pointer + 3];
+
+    if (mode1 === 1) param1 = program[pointer + 1];
+    if (mode2 === 1) param2 = program[pointer + 2];
+    if (mode1 === 2) param1 = program[program[pointer + 1] + relativeBase];
+    if (mode2 === 2) param2 = program[program[pointer + 2] + relativeBase];
+    if (mode3 === 2) writeAddress = program[pointer + 3] + relativeBase;
+    if (opCode === 3) {
+      if (mode3 === 2) {
+        writeAddress = program[pointer + 1] + relativeBase;
+      } else {
+        writeAddress = program[pointer + 1];
+      }
+    };
+
+    return [param1, param2, writeAddress];
+  }
+
+  static processDigits(digits) {
+    const opCode = parseInt(digits.slice(digits.length - 2))
+    const paramModes = {
+      mode1: parseInt(digits[digits.length - 3]),
+      mode2: parseInt(digits[digits.length - 4]),
+      mode3: parseInt(digits[digits.length - 5])
+    }
+
+    return [opCode, paramModes];
+  }
+}
+
+module.exports = IntcodeComputer;
