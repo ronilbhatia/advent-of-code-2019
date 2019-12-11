@@ -64,13 +64,24 @@ class PaintingRobot {
   }
   
   render() {
-    for (let j = 0; j >= -5; j--) {
+    const [xLow, xHigh] = this.findRange('x')
+    const [yLow, yHigh] = this.findRange('y')
+    
+    for (let j = yHigh; j >= yLow; j--) {
       let str = ""
-      for (let i = 0; i <= 40; i++) {
+      for (let i = xLow; i <= xHigh; i++) {
         str += (this.coloredPositions[[i, j].toString()] === 1) ? '*' : ' ';
       }
       console.log(str);
     }
+  }
+
+  findRange(dim) {
+    const coords = Object.keys(this.coloredPositions).map(coord => coord.split(','));
+    const allVals = coords.map(coord => (dim === 'x') ? coord[0] : coord[1])
+                          .map(val => parseInt(val));
+
+    return [Math.min(...allVals), Math.max(...allVals)];        
   }
 }
 
