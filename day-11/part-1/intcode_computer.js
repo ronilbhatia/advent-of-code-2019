@@ -16,8 +16,8 @@ class IntcodeComputer {
       const digits = program[this.pointer].toString();
       let [opCode, paramModes] = IntcodeComputer.processDigits(digits);
       let [param1, param2, writeAddress] = this.getParams(paramModes, opCode);
-      console.log('Pointer ', this.pointer);
-      console.log('Op Code: ', opCode);
+      // console.log('Pointer ', this.pointer);
+      // console.log('Op Code: ', opCode);
       if (opCode === 1) {
         program[writeAddress] = (param1 + param2)
         this.pointer += 4;
@@ -25,11 +25,11 @@ class IntcodeComputer {
         program[writeAddress] = (param1 * param2)
         this.pointer += 4;
       } else if (opCode === 3) {
-        console.log('Receiving Input ', this.paintbot.currPanel);
+        // console.log('Receiving Input ', this.paintbot.currPanel);
         program[writeAddress] = this.paintbot.currPanel;
         this.pointer += 2
       } else if (opCode === 4) {
-        console.log('Param: ', param1);
+        // console.log('Param: ', param1);
         this.paintbot.receiveInstruction(param1);
         this.pointer += 2;
       } else if (opCode === 5) {
@@ -49,8 +49,9 @@ class IntcodeComputer {
         break;
       }
     }
-    console.log(this.paintbot.totalPaints);
-    console.log(Object.keys(this.paintbot.coloredPositions).length);
+    // console.log(this.paintbot.coloredPositions);
+    // console.log(Object.keys(this.paintbot.coloredPositions).length);
+    this.paintbot.render();
   }
 
   getParams(paramModes, opCode) {

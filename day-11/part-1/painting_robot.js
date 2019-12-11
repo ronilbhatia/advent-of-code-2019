@@ -9,8 +9,8 @@ class PaintingRobot {
   constructor() {
     this.currPos = [0, 0];
     this.state = 1; // which output does it have, paint color or turn dir?
-    this.currPanel = 0; // 0 = black, 1 = white
-    this.coloredPositions = { '0,0': 0 };
+    this.currPanel = 1; // 0 = black, 1 = white
+    this.coloredPositions = { '0,0': 1 };
     this.currDir = 'up';
     this.totalPaints = 0;
   }
@@ -64,6 +64,16 @@ class PaintingRobot {
     const moveDiff = DIRECTIONS[this.currDir];
     console.log(this.currPos);
     this.currPos = [this.currPos[0] + moveDiff[0], this.currPos[1] + moveDiff[1]];
+  }
+
+  render() {
+    for (let i = 0; i <= 40; i++) {
+      let str = ""
+      for (let j = 0; j <= 5; j++) {
+        str += (this.coloredPositions[[i, j].toString()] === 1) ? '*' : ' ';
+      }
+      console.log(str);
+    }
   }
 }
 
