@@ -6,10 +6,10 @@ DIRECTIONS = {
 }
 
 class PaintingRobot {
-  constructor() {
+  constructor(startPanel) {
     this.currPos = [0, 0];
     this.state = 1; // which output does it have, paint color or turn dir?
-    this.currPanel = 1; // 0 = black, 1 = white
+    this.currPanel = startPanel; // 0 = black, 1 = white
     this.coloredPositions = {};
     this.currDir = 'up';
     this.totalPaints = 0;

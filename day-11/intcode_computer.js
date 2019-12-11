@@ -3,10 +3,9 @@ const PaintingRobot = require('./painting_robot');
 class IntcodeComputer {
   constructor(program, initialInput) {
     this.program = program;
-    this.initialInput = initialInput;
     this.pointer = 0;
     this.relativeBase = 0;
-    this.paintbot = new PaintingRobot();
+    this.paintbot = new PaintingRobot(initialInput);
   }
 
   run() {
@@ -57,8 +56,8 @@ class IntcodeComputer {
 
     if (mode1 === 1) param1 = program[pointer + 1];
     if (mode2 === 1) param2 = program[pointer + 2];
-    if (mode1 === 2) param1 = program[program[pointer + 1] + relativeBase];
-    if (mode2 === 2) param2 = program[program[pointer + 2] + relativeBase];
+    if (mode1 === 2) param1 = program[program[pointer + 1] + relativeBase] || 0;
+    if (mode2 === 2) param2 = program[program[pointer + 2] + relativeBase] || 0;
     if (mode3 === 2) writeAddress = program[pointer + 3] + relativeBase;
     if (opCode === 3) {
       if (mode1 === 2) {
