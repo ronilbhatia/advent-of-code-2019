@@ -16,8 +16,6 @@ class IntcodeComputer {
       const digits = program[this.pointer].toString();
       let [opCode, paramModes] = IntcodeComputer.processDigits(digits);
       let [param1, param2, writeAddress] = this.getParams(paramModes, opCode);
-      // console.log('Pointer ', this.pointer);
-      // console.log('Op Code: ', opCode);
       if (opCode === 1) {
         program[writeAddress] = (param1 + param2)
         this.pointer += 4;
@@ -25,11 +23,9 @@ class IntcodeComputer {
         program[writeAddress] = (param1 * param2)
         this.pointer += 4;
       } else if (opCode === 3) {
-        // console.log('Receiving Input ', this.paintbot.currPanel);
         program[writeAddress] = this.paintbot.currPanel;
         this.pointer += 2
       } else if (opCode === 4) {
-        // console.log('Param: ', param1);
         this.paintbot.receiveInstruction(param1);
         this.pointer += 2;
       } else if (opCode === 5) {
@@ -49,17 +45,14 @@ class IntcodeComputer {
         break;
       }
     }
-    // console.log(this.paintbot.coloredPositions);
-    // console.log(Object.keys(this.paintbot.coloredPositions).length);
-    this.paintbot.render();
   }
 
   getParams(paramModes, opCode) {
     const { mode1, mode2, mode3 } = paramModes;
     const { program, pointer, relativeBase } = this;
 
-    let param1 = program[program[pointer + 1]]
-    let param2 = program[program[pointer + 2]]
+    let param1 = program[program[pointer + 1]] || 0;
+    let param2 = program[program[pointer + 2]] || 0;
     let writeAddress = program[pointer + 3];
 
     if (mode1 === 1) param1 = program[pointer + 1];
@@ -68,7 +61,7 @@ class IntcodeComputer {
     if (mode2 === 2) param2 = program[program[pointer + 2] + relativeBase];
     if (mode3 === 2) writeAddress = program[pointer + 3] + relativeBase;
     if (opCode === 3) {
-      if (mode3 === 2) {
+      if (mode1 === 2) {
         writeAddress = program[pointer + 1] + relativeBase;
       } else {
         writeAddress = program[pointer + 1];

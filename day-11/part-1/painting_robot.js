@@ -10,28 +10,22 @@ class PaintingRobot {
     this.currPos = [0, 0];
     this.state = 1; // which output does it have, paint color or turn dir?
     this.currPanel = 1; // 0 = black, 1 = white
-    this.coloredPositions = { '0,0': 1 };
+    this.coloredPositions = {};
     this.currDir = 'up';
     this.totalPaints = 0;
   }
 
   receiveInstruction(instruction) {
-    // console.log('Robot state: ', this.state)
     if (this.state === 1) {
       const posStr = this.currPos.toString();
       this.coloredPositions[posStr] = (instruction === 0) ? 0 : 1
       this.currPanel = instruction;
       this.totalPaints++;
       this.state = 2;
-      console.log('Painted position ', this.currPos, ' ', this.currPanel, instruction);
-      // console.log(this.coloredPositions);
     } else {
       this.rotate(instruction);
-      console.log('Rotated ', instruction, 'now facing ', this.currDir)
       this.incrementPos();
-      console.log('New position is ', this.currPos);
       this.currPanel = this.coloredPositions[this.currPos.toString()] || 0;
-      console.log('Current Panel ', this.currPanel);
       this.state = 1;
     }
   }
@@ -62,14 +56,13 @@ class PaintingRobot {
 
   incrementPos() {
     const moveDiff = DIRECTIONS[this.currDir];
-    console.log(this.currPos);
     this.currPos = [this.currPos[0] + moveDiff[0], this.currPos[1] + moveDiff[1]];
   }
 
   render() {
-    for (let i = 0; i <= 40; i++) {
+    for (let j = 0; j >= -5; j--) {
       let str = ""
-      for (let j = 0; j <= 5; j++) {
+      for (let i = 0; i <= 40; i++) {
         str += (this.coloredPositions[[i, j].toString()] === 1) ? '*' : ' ';
       }
       console.log(str);
