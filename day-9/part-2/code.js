@@ -3,7 +3,6 @@ const IntcodeComputer = require('../intcode_computer');
 
 fs.readFile('input.txt', (err, data) => {
   const input = data.toString().split(',').map(el => parseInt(el));
-  const machine = new IntcodeComputer(input, 0);
+  const machine = new IntcodeComputer(input, 2);
   machine.run();
-  console.log(machine.paintbot.spacesPainted())
 });

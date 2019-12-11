@@ -49,17 +49,21 @@ class IntcodeComputer {
     const { mode1, mode2, mode3 } = paramModes;
     const { program, pointer, relativeBase } = this;
 
-    let param1 = program[program[pointer + 1]]
-    let param2 = program[program[pointer + 2]]
-    let writeAddress = program[pointer + 3];
+    let param1 = program[program[pointer + 1]] || 0;
+    let param2 = program[program[pointer + 2]] || 0;
+    let writeAddress = program[pointer + 3] || 0;
 
-    if (mode1 === 1) param1 = program[pointer + 1];
-    if (mode2 === 1) param2 = program[pointer + 2];
-    if (mode1 === 2) param1 = program[program[pointer + 1] + relativeBase];
-    if (mode2 === 2) param2 = program[program[pointer + 2] + relativeBase];
-    if (mode3 === 2) writeAddress = program[pointer + 3] + relativeBase;
-    if (mode1 === 2 && opCode === 3)
-      writeAddress = program[pointer + 1] + relativeBase;
+    if (mode1 === 1) param1 = program[pointer + 1] || 0;
+    if (mode2 === 1) param2 = program[pointer + 2] || 0;
+    if (mode1 === 2) param1 = program[program[pointer + 1] + relativeBase] || 0;
+    if (mode2 === 2) param2 = program[program[pointer + 2] + relativeBase] || 0;
+    if (mode3 === 2) writeAddress = program[pointer + 3] + relativeBase || 0;
+
+    // OpCode 3 is the only one that writes based on the 1st, not 3rd, parameter
+    if (opCode === 3) {
+      writeAddress = program[pointer + 1] || 0;
+      if (mode1 === 2) writeAddress += relativeBase;
+    }
 
     return [param1, param2, writeAddress];
   }

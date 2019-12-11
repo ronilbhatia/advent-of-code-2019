@@ -27,13 +27,13 @@ fs.readFile('input.txt', (err, input) => {
     while (true) {
       let currIdx = ampStepIndices[ampIdx];
       let program = ampPrograms[ampIdx];
-      console.log("Amp: ", ampIdx);
-      console.log("Step: ", currIdx);
-      console.log("Program: ", program);
+      // console.log("Amp: ", ampIdx);
+      // console.log("Step: ", currIdx);
+      // console.log("Program: ", program);
         const digits = program[currIdx].toString();
         let opCode = program[currIdx];
         
-        console.log("Op Code: ", opCode);
+        // console.log("Op Code: ", opCode);
         let param1, param2
         
         if (opCode > 10) {

@@ -59,6 +59,10 @@ class PaintingRobot {
     this.currPos = [this.currPos[0] + moveDiff[0], this.currPos[1] + moveDiff[1]];
   }
 
+  spacesPainted() {
+    return Object.keys(this.coloredPositions).length;
+  }
+  
   render() {
     for (let j = 0; j >= -5; j--) {
       let str = ""
