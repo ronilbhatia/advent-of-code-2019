@@ -3,7 +3,7 @@ const Grid = require('./grid.js');
 class IntcodeComputer {
   constructor(program, initialInput = null) {
     this.program = program;
-    this.initialInput = initialInput;
+    this.input = initialInput;
     this.pointer = 0;
     this.relativeBase = 0;
     this.grid = new Grid();
@@ -24,7 +24,9 @@ class IntcodeComputer {
         program[writeAddress] = (param1 * param2)
         this.pointer += 4;
       } else if (opCode === 3) {
-        program[writeAddress] = this.initialInput;
+        this.input = this.grid.moveJoystick();
+        console.log(`Taking input: ${this.input}`);
+        program[writeAddress] = this.input;
         this.pointer += 2
       } else if (opCode === 4) {
         this.grid.processInstruction(param1);
