@@ -17,7 +17,6 @@ class Grid {
     } else {
       this.addPoint(this.currCoord, instruction);
       if (instruction === 2) this.blocks++;
-      if (instruction === 4) console.log('bing');
     }
 
     this.state = (this.state % 3) + 1;
