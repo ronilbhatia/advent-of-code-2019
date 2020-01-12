@@ -8,6 +8,4 @@ fs.readFile('input.txt', (err, data) => {
     .map(el => parseInt(el));
   const machine = new IntcodeComputer(input);
   machine.run();
-  console.log(machine.drone.countAffectedPoints());
-  machine.drone.drawMap();
 });

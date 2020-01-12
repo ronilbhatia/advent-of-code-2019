@@ -25,7 +25,10 @@ class IntcodeComputer {
         this.pointer += 4;
       } else if (opCode === 3) {
         this.input = this.drone.provideInput();
-        // if (this.input >= 1000) break;
+        if (this.drone.state === 2) {
+          console.log('Answer: ', this.input);
+          break;
+        }
         program[writeAddress] = this.input;
         this.pointer += 2;
       } else if (opCode === 4) {
