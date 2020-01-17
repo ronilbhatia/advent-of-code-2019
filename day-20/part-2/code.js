@@ -7,6 +7,6 @@ fs.readFile('input.txt', (err, data) => {
     .split('\n')
     .map(row => row.split(''));
   const mazeSolver = new MazeSolver(input);
-  const endNode = mazeSolver.root.dfs(mazeSolver.end.toString(), 0);
+  const endNode = mazeSolver.findEndNode();
   console.log(endNode.countParents());
 });

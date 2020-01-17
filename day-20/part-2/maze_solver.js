@@ -19,7 +19,7 @@ class MazeSolver {
     this.end = this.portals['ZZ'];
     this.root = new TreeNode(this.start, 0);
     this.visitedPositions = { 0: new Set() };
-    this.visitedPositions[0].add(this.start.toString())
+    this.visitedPositions[0].add(this.start.toString());
     this.buildMoveTree();
   }
 
@@ -36,35 +36,43 @@ class MazeSolver {
 
         // travel through portal
         if (this.isPortal(neighborVal)) {
-          if (this.isOuterPortal(currNode.val) && level === 0) return;
           const [neighborVals] = this.neighbors(neighbor);
           let name = neighborVals.find(el => this.isPortal(el)) + neighborVal;
           if (name === 'ZZ' && level === 0) foundEnd = true;
           if (name === 'AA' || name === 'ZZ') return;
+          if (this.isOuterPortal(currNode.val) && level === 0) return;
           let reversedName = name;
           if (this.portals[name].toString() === currNode.val.toString()) {
-            reversedName = name.split('').reverse().join('');
+            reversedName = name
+              .split('')
+              .reverse()
+              .join('');
             if (name === reversedName) reversedName += name[0];
           }
 
           level = this.isOuterPortal(currNode.val) ? level - 1 : level + 1;
-          // Assuming we don't have to recurse more than 99 levels deep to avoid
-          // infinite recursion
-          if (level >= 99) return; 
           neighbor = this.portals[reversedName];
         }
 
         // add children and update visited positions
-        if (!this.visitedPositions[level] || !this.visitedPositions[level].has(neighbor.toString())) {
-          if (!this.visitedPositions[level]) this.visitedPositions[level] = new Set();
+        if (
+          !this.visitedPositions[level] ||
+          !this.visitedPositions[level].has(neighbor.toString())
+        ) {
+          if (!this.visitedPositions[level])
+            this.visitedPositions[level] = new Set();
           this.visitedPositions[level].add(neighbor.toString());
           const nextNode = new TreeNode(neighbor, level);
           if (!nextNode) console.log(nextNode);
           queue.push(nextNode);
           currNode.addChild(nextNode);
         }
-      })
+      });
     }
+  }
+
+  findEndNode() {
+    return this.root.dfs(this.end.toString(), 0);
   }
 
   isPortal(el) {
@@ -74,9 +82,9 @@ class MazeSolver {
 
   isOuterPortal(pos) {
     return (
-      pos[0] === 2 || 
-      pos[0] === this.grid.length - 3 || 
-      pos[1] === 2 || 
+      pos[0] === 2 ||
+      pos[0] === this.grid.length - 3 ||
+      pos[1] === 2 ||
       pos[1] === this.grid[0].length - 3
     );
   }
@@ -87,14 +95,17 @@ class MazeSolver {
       for (let j = 0; j < this.grid[i].length; j++) {
         const curr = this.grid[i][j];
         if (this.isPortal(curr)) {
-          const [neighbors, spot] = this.neighbors([i, j])
+          const [neighbors, spot] = this.neighbors([i, j]);
           if (neighbors.includes('.')) {
             let name = neighbors.find(el => this.isPortal(el)) + curr;
             let reversedName = name;
             // Complementary portal will be name reversed. If name is palindrome
             // then we will make it three letters long all same letter.
             if (portals[name]) {
-              reversedName = name.split('').reverse().join('');
+              reversedName = name
+                .split('')
+                .reverse()
+                .join('');
               if (reversedName === name) reversedName += name[0];
             }
             console.log(reversedName);
@@ -122,7 +133,7 @@ class MazeSolver {
       if (this.offGrid(nextX, nextY)) return;
 
       neighbors.push(this.grid[nextX][nextY]);
-      if (this.grid[nextX][nextY] === '.') spot = [nextX, nextY]
+      if (this.grid[nextX][nextY] === '.') spot = [nextX, nextY];
     });
 
     return [neighbors, spot];
@@ -144,7 +155,7 @@ class MazeSolver {
   }
 
   offGrid(x, y) {
-    return (x < 0 || y < 0 || x >= this.grid.length || y >= this.grid[0].length);
+    return x < 0 || y < 0 || x >= this.grid.length || y >= this.grid[0].length;
   }
 }
 
