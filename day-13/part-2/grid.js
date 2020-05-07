@@ -1,3 +1,5 @@
+const readline = require('readline')
+
 class Grid {
   constructor() {
     this.points = {}
@@ -16,6 +18,11 @@ class Grid {
   }
 
   moveJoystick() {
+    const blank = '\n'.repeat(process.stdout.rows)
+    console.log(blank)
+    readline.cursorTo(process.stdout, 0, 0)
+    readline.clearScreenDown(process.stdout)
+
     this.printGrid();
     if (this.ball[1] === 20) return (this.ball[0] === this.paddle[0]) ? 0 : this.ballDir;
     if (this.paddle[0] === this.ball[0]) return this.ballDir;
